@@ -74,8 +74,8 @@ def convert(indexes):
 #            subitems[i][cnt].text = df_work.at[i, df_work.columns[indexes[i]]]
 
 #    data = et.tostring(yml_catalog)
-    resultfile = open("res.yml", "w")    
-    resultfile.write(et.tostring(yml_catalog, 'utf-8'))
+    resultfile = open("res.yml", "w")   
+    resultfile.write(et.tostring(yml_catalog, encoding="unicode"))
 
 ############ WORK #############
 def work():
@@ -109,7 +109,7 @@ def work():
             for x in range(len(df.index)):
                 temp+=freq[x][cnt]    
             sums.append(temp)
-        print(sums.index(max(sums)))
+#        print(sums.index(max(sums)))
         idx.append(sums.index(max(sums)))
     convert(idx)
 
