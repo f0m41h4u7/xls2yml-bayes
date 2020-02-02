@@ -2,4 +2,4 @@
 *.ipynb*
 backup
 test.py
-.gitignore
+*.csv
