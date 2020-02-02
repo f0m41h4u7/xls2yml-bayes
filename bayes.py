@@ -8,7 +8,7 @@ from pymystem3 import Mystem
 
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
-df = pd.read_excel(open('the_table.xls', 'rb'))
+df = pd.read_excel(open('../the_table.xls', 'rb'))
 classes = df.columns
 mystem = Mystem()
 p = [dict() for x in range(len(classes))]
