@@ -70,11 +70,17 @@ def convert(indexes):
 
 ############ WORK #############
 def work():
-        df_work = pd.read_excel(open('the_table.xls', 'rb'))
+        df_work = pd.read_excel(open('ks.xls', 'rb'))
 	classes = df.columns
 	for cnt in range(0, len(classes)):
                 for row in df.index:
                         cell = df.at[row, classes[cnt]]
+			if not isinstance(cell, int) and not isinstance(cell, numpy.int64) and not isinstance(cell, float):
+				cell = cell.encode('utf-8')
+                                words = word_process(cell)
+				freq = [[0 for x in range(len(words))] for y in range(len(classes))]
+				for w in range(len(words)):
+					freq[w][cnt] = p[cnt]
 	
 
 ############ LEARN ############
