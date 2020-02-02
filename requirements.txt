@@ -1,0 +1,4 @@
+pandas
+nltk
+pymystem3
+xlrd

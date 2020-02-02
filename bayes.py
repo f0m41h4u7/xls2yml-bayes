@@ -3,10 +3,8 @@ import pandas as pd
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.snowball import RussianStemmer
-import locale
 from pymystem3 import Mystem
-
-locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+import numpy
 
 df = pd.read_excel(open('the_table.xls', 'rb'))
 classes = df.columns
@@ -42,7 +40,7 @@ def main():
 	for cnt in range(0, len(classes)):
 		for row in df.index:
 			cell = df.at[row, classes[cnt]]
-			if not isinstance(cell, int):
+			if not isinstance(cell, int) and not isinstance(cell, numpy.int64):
 				cell = cell.encode('utf-8')
 				words = word_process(cell)
 				count_freq(words, cnt)	
@@ -54,7 +52,6 @@ def main():
 		for w in p[cnt]:
 			#p[cnt][w] /= len(p[cnt])
 			print(p[cnt][w], len(p[cnt]))
-	#print(p[0])
 
 if __name__== "__main__":
 	main()
