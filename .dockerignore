@@ -1,0 +1,5 @@
+.git*
+*.json
+Dockerfile
+*.sh
+README.md

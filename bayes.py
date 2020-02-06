@@ -9,7 +9,7 @@ import xml.etree.ElementTree as et
 import datetime
 import json
 
-df = pd.read_excel(open('the_table.xls', 'rb'))
+df = pd.read_excel(open('/home/grimpoteuthis/app/xls2xml_bayes/the_table.xls', 'rb'))
 classes = df.columns
 mystem = Mystem()
 p = [dict() for x in range(len(classes))]
@@ -36,8 +36,8 @@ def count_freq(words, cnt):
 
 ########### CONVERT ###########
 def convert(indexes):
-    df_work = pd.read_excel(open('the_table.xls', 'rb'))
-    with open('user_info.json', 'r') as f:
+    df_work = pd.read_excel(open('/home/grimpoteuthis/app/uploads/excel.xls', 'rb'))
+    with open('/home/grimpoteuthis/app/user_info.json', 'r') as f:
         user_info = json.load(f)
 
     # create file structure of yml
@@ -65,21 +65,21 @@ def convert(indexes):
         subdes = et.SubElement(offer[i], 'description')
         subpr = et.SubElement(offer[i], 'price')
         subqty = et.SubElement(offer[i], 'qty')
-        subname.text = str(df_work.at[i, df_work.columns[3]])
+        subname.text = str(df_work.at[i, df_work.columns[0]].encode('utf-8'))
         subdes.text = str(df_work.at[i, df_work.columns[1]].encode('utf-8'))
-        subpr.text = str(df_work.at[i, df_work.columns[0]].encode('utf-8'))
-        subqty.text = str(df_work.at[i, df_work.columns[2]])
+        subpr.text = str(df_work.at[i, df_work.columns[2]])
+        subqty.text = str(df_work.at[i, df_work.columns[3]])
 #        for cnt in range(0, len(classes)):
 #            subitems[i][cnt] = et.SubElement(offer[i], classes[cnt])
 #            subitems[i][cnt].text = df_work.at[i, df_work.columns[indexes[i]]]
 
 #    data = et.tostring(yml_catalog)
-    resultfile = open("res.yml", "w")   
+    resultfile = open("/home/grimpoteuthis/app/xls2xml_bayes/res.yml", "w")   
     resultfile.write(et.tostring(yml_catalog, encoding="unicode"))
 
 ############ WORK #############
 def work():
-    df_work = pd.read_excel(open('table.xls', 'rb'))
+    df_work = pd.read_excel(open('/home/grimpoteuthis/app/uploads/excel.xls', 'rb'))
     classes = df.columns
     for cnt in range(0, len(classes)):
         freq = np.empty([65536, len(classes)])
@@ -113,28 +113,6 @@ def work():
         idx.append(sums.index(max(sums)))
     convert(idx)
 
-############ LEARN ############
-def learn():
-    for cnt in range(0, len(classes)):
-        for row in df.index:
-            cell = df.at[row, classes[cnt]]
-            if not isinstance(cell, int) and not isinstance(cell, np.int64) and not isinstance(cell, float):
-                cell = cell.encode('utf-8')
-                words = word_process(cell)
-                count_freq(words, cnt)    
-            else:
-                if 'number' in p[cnt]:
-                    p[cnt]['number'] += 1
-                else:
-                    p[cnt]['number'] = 1
-    #    for w in p[cnt]:
-    #        # p[cnt][w] /= len(p[cnt])
-    #        print(p[cnt][w], len(p[cnt]))        
-
 ############ MAIN #############
-def main():
-    learn()
+def parse():
     work()
-
-if __name__== "__main__":
-    main()
