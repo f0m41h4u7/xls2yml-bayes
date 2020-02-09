@@ -4,16 +4,24 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.snowball import RussianStemmer
 from pymystem3 import Mystem
 import numpy as np
+import aerospike
 
-df = pd.read_excel(open('ks.xls', 'rb'))
+config = {
+  'hosts': [ ('127.0.0.1', 3000) ]
+}
+
+try:
+  client = aerospike.client(config).connect()
+except:
+  import sys
+  print("failed to connect to the cluster with", config['hosts'])
+  sys.exit(1)
+
+
+df = pd.read_excel(open('ks.xlsx', 'rb'))
 classes = df.columns
 mystem = Mystem()
-#p = [dict() for x in range(len(classes))]
-
-db = redis.Redis(
-	host='astaroth',
-	port=6379
-)
+p = [dict() for x in range(len(classes))]
 
 def isunique(w):
 	for t in range(0, len(classes)):
@@ -39,7 +47,7 @@ def learn():
 	for cnt in range(0, len(classes)):
 		for row in df.index:
 			cell = df.at[row, classes[cnt]]
-			if not isinstance(cell, int) and not isinstance(cell, np.int64) and not isinstance(cell, float):
+			if not isinstance(cell, int) and not isinstance(cell, np.int64) and not isinstance(cell, float) and not isinstance(cell, TimeStamp):
 				cell = cell.encode('utf-8')
 				words = word_process(cell)
 				count_freq(words, cnt)
@@ -51,3 +59,6 @@ def learn():
 		for w in p[cnt]:
 			# p[cnt][w] /= len(p[cnt])
 			print(p[cnt][w], len(p[cnt]))
+
+#if __name__ == "__main__":
+#	learn()

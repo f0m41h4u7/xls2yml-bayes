@@ -1,7 +1,4 @@
 numpy
-matplotlib
-scipy
-scikit-learn
 pandas
 nltk
 pymystem3
