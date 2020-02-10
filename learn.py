@@ -4,28 +4,19 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.snowball import RussianStemmer
 from pymystem3 import Mystem
 import numpy as np
-import aerospike
-
-config = {
-  'hosts': [ ('127.0.0.1', 3000) ]
-}
-
-try:
-  client = aerospike.client(config).connect()
-except:
-  import sys
-  print("failed to connect to the cluster with", config['hosts'])
-  sys.exit(1)
-
+import redis
 
 df = pd.read_excel(open('ks.xlsx', 'rb'))
 classes = df.columns
 mystem = Mystem()
-p = [dict() for x in range(len(classes))]
+
+vocabulary = []
+for x in range(len(classes)):
+	vocabulary[x] = redis.Redis(host='127.0.0.1', port=6379, db = x)
 
 def isunique(w):
 	for t in range(0, len(classes)):
-		if w in p[t]:
+		if vocabulary[cnt].exists(w):
 			return False
 	return True
 
@@ -38,10 +29,10 @@ def word_process(cell):
 
 def count_freq(words, cnt):
 	for w in words:
-		if w in p[cnt]:
-			p[cnt][w]+=1
+		if vocabulary[cnt].exists(w):
+			vocabulary[cnt].incr(w)
 		else:
-			p[cnt][w]=1
+			vocabulary[cnt].set(w, 1)
 
 def learn():
 	for cnt in range(0, len(classes)):
@@ -52,13 +43,13 @@ def learn():
 				words = word_process(cell)
 				count_freq(words, cnt)
 			else:
-				if 'number' in p[cnt]:
-					p[cnt]['number'] += 1
+				if vocabulary[cnt].exists('number'):
+					vocabulary[cnt].incr('number')
 				else:
-					p[cnt]['number'] = 1
-		for w in p[cnt]:
+					vocabulary[cnt].set('number', 1)
+#		for w in p[cnt]:
 			# p[cnt][w] /= len(p[cnt])
-			print(p[cnt][w], len(p[cnt]))
+#			print(vocabulary[cnt][w], len(vocabulary[cnt]))
 
 #if __name__ == "__main__":
 #	learn()
