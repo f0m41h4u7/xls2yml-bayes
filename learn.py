@@ -4,7 +4,6 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.snowball import RussianStemmer
 from pymystem3 import Mystem
 import numpy as np
-import redis
 
 df = pd.read_excel(open('ks.xlsx', 'rb'))
 classes = df.columns
